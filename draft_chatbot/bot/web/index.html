@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BA 요청 챗봇 테스트</title>
+<style>
+/* 로컬 전용 화면: 외부 글꼴·스크립트 없음 (고객 데이터 외부 반출 금지) */
+:root{
+  --bg:#f5f7f8; --surface:#fff; --fg:#17232b; --muted:#5b6b75; --line:#d9e1e5;
+  --accent:#1f5f7a; --accent-soft:#e3eef3; --warn:#9a5b00; --warn-soft:#fbefd9;
+  --ok:#22704a; --ok-soft:#e1f1e8; --bad:#a33a2c; --bad-soft:#f8e3df; --code:#eef2f4;
+  --mk:#1f5f7a; --ba:#7a4a1f;
+  --f:"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  --m:ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#11181d; --surface:#18222a; --fg:#e4ebef; --muted:#97a7b1; --line:#2c3a44;
+  --accent:#7fb8d1; --accent-soft:#1d3240; --warn:#e6b25a; --warn-soft:#3a2c14;
+  --ok:#7ccaa0; --ok-soft:#173326; --bad:#ee8f80; --bad-soft:#3d1f1a; --code:#0f1519;
+  --mk:#7fb8d1; --ba:#e0a46a; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f);font-size:14px;line-height:1.6}
+header{background:var(--surface);border-bottom:1px solid var(--line);padding:12px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+header h1{font-size:17px;margin:0}
+header .meta{font-size:12px;color:var(--muted)}
+nav.tabs{display:flex;gap:4px;flex-wrap:wrap}
+nav.tabs button{font:inherit;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:6px 12px;border-radius:6px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+main{padding:16px 20px;max-width:1400px;margin:0 auto}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px;align-items:start}
+.pane{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;min-width:0}
+.pane>h2{margin:0;font-size:15px;padding:10px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pane.mk>h2{border-top:4px solid var(--mk)} .pane.ba>h2{border-top:4px solid var(--ba)}
+.pane .body{padding:14px;display:flex;flex-direction:column;gap:12px}
+textarea,input[type=text],select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+textarea:focus,input:focus,select:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+textarea.sql{font-family:var(--m);font-size:12px;min-height:180px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{font:inherit;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:7px 14px;border-radius:6px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.btn.bad{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:inherit;font-size:12px;border:1px dashed var(--line);background:var(--bg);color:var(--fg);padding:3px 8px;border-radius:999px;cursor:pointer;text-align:left}
+.chips button:hover{border-color:var(--accent);color:var(--accent)}
+.exg{font-size:12px;color:var(--muted);margin:4px 0 2px}
+details.ex summary{cursor:pointer;font-size:13px;color:var(--muted)}
+.tag{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:4px;white-space:nowrap}
+.t-clarify{background:var(--warn-soft);color:var(--warn)} .t-review{background:var(--accent-soft);color:var(--accent)}
+.t-answered{background:var(--ok-soft);color:var(--ok)} .t-handoff{background:var(--bad-soft);color:var(--bad)}
+.t-running{background:var(--code);color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto}
+.list button{font:inherit;text-align:left;border:1px solid var(--line);background:var(--bg);color:var(--fg);padding:6px 8px;border-radius:6px;cursor:pointer;display:flex;gap:8px;align-items:center}
+.list button[aria-current="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.list button span.q{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.card{border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.bubble{background:var(--code);border-radius:8px;padding:8px 10px;white-space:pre-wrap;overflow-wrap:anywhere}
+.bubble.me{background:var(--accent);color:var(--surface);align-self:flex-end;max-width:90%}
+.muted{color:var(--muted);font-size:12px}
+.alert{border-radius:6px;padding:8px 10px;font-size:13px}
+.alert.warn{background:var(--warn-soft);color:var(--warn)} .alert.bad{background:var(--bad-soft);color:var(--bad)}
+.alert.ok{background:var(--ok-soft);color:var(--ok)} .alert.info{background:var(--accent-soft);color:var(--accent)}
+pre.code{margin:0;background:var(--code);border-radius:6px;padding:10px;font-family:var(--m);font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto}
+.tbl{overflow:auto;border:1px solid var(--line);border-radius:6px;max-height:300px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--bg);color:var(--muted);font-weight:500;font-size:12px;position:sticky;top:0}
+td.n{font-family:var(--m);font-variant-numeric:tabular-nums}
+label.inline{display:flex;gap:6px;align-items:center;font-size:13px}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;font-size:13px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+section.tab[hidden]{display:none}
+.wide{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.wide h2{margin:0;font-size:16px}
+.lv-OK{color:var(--ok)} .lv-WARN{color:var(--warn)} .lv-FAIL{color:var(--bad)}
+@media (max-width:900px){.split{grid-template-columns:minmax(0,1fr)} main{padding:12px}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>BA 요청 챗봇 테스트</h1>
+    <div class="meta">offline 모드 · 이 PC 안에서만 열림 · 데이터 기준: 주문·행동 2026-11-19, 동의·발송 2026-11-20 18:00 · 인증 없음(프로토타입)</div>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="test">테스트</button>
+    <button role="tab" aria-selected="false" data-tab="rules">규칙 점검</button>
+    <button role="tab" aria-selected="false" data-tab="reqs">고객 요청 반영</button>
+    <button role="tab" aria-selected="false" data-tab="log">처리 기록</button>
+  </nav>
+</header>
+
+<main>
+<!-- 테스트: 마케터(왼쪽) · BA(오른쪽) -->
+<section class="tab" id="tab-test">
+  <div class="split">
+    <div class="pane mk">
+      <h2><span>마케터</span><span class="muted">요청 → 되묻기 답변 → 결과 확인</span></h2>
+      <div class="body">
+        <textarea id="ask-text" rows="3" placeholder="예: 10월 카테고리별 매출 알려 주세요"></textarea>
+        <div class="row">
+          <input type="text" id="ask-user" value="marketer01" style="width:140px" aria-label="요청자">
+          <button class="btn primary" id="ask-btn">요청 보내기</button>
+          <span class="muted" id="ask-msg" role="status"></span>
+        </div>
+        <details class="ex" open><summary>고객 테스트 시나리오 (순서대로 따라 해 보세요)</summary><ol id="scenarios" style="margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:8px"></ol></details>
+        <details class="ex"><summary>예시 문구 더 보기 (누르면 입력창에 들어감)</summary><div id="examples"></div></details>
+        <div>
+          <div class="row" style="justify-content:space-between"><b>내 요청</b><button class="btn" id="req-refresh">새로고침</button></div>
+          <div class="list" id="req-list"></div>
+        </div>
+        <div id="mk-card"></div>
+      </div>
+    </div>
+
+    <div class="pane ba">
+      <h2><span>BA 검토</span><span class="muted">승인 없이는 마케터에게 결과가 가지 않음</span></h2>
+      <div class="body">
+        <div>
+          <div class="row" style="justify-content:space-between"><b>검토 대기열</b><button class="btn" id="queue-refresh">새로고침</button></div>
+          <div class="list" id="queue"></div>
+        </div>
+        <div id="ba-card"><p class="muted">대기열에서 요청을 고르세요.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 규칙 점검 -->
+<section class="tab" id="tab-rules" hidden>
+  <div class="wide">
+    <h2>규칙 파일 점검 <span class="muted">(고객 요청: 룰을 직접 보고 고치기)</span></h2>
+    <p class="muted">규칙은 <code>draft_chatbot/rules/*.csv</code> 를 엑셀로 열어 고칩니다. 저장한 뒤 아래 버튼으로 점검하면, 다음 요청부터 챗봇에 반영됩니다. FAIL이 있으면 챗봇은 요청을 처리하지 않고 BA에게 넘깁니다.</p>
+    <div class="row"><button class="btn primary" id="rules-run">점검 실행</button><span class="muted" id="rules-msg" role="status"></span></div>
+    <div id="rules-out"></div>
+  </div>
+</section>
+
+<!-- 고객 요청 반영 -->
+<section class="tab" id="tab-reqs" hidden>
+  <div class="wide">
+    <h2>고객 요청과 이 화면에서 확인하는 법</h2>
+    <div class="tbl" style="max-height:none">
+      <table>
+        <thead><tr><th>#</th><th>고객 요청·제약</th><th>반영</th><th>이 화면에서 확인</th></tr></thead>
+        <tbody>
+          <tr><td>C1</td><td>업무 자동화</td><td>요청 → 되묻기 → 초안 → 검사 → 미리 실행 → BA 승인 → 답변</td><td>테스트 탭에서 요청을 보내고 BA 쪽에서 승인</td></tr>
+          <tr><td>C2</td><td>SQL 보안</td><td>단일 SELECT, 허용 테이블만, 실행 시간·행 수 상한 (코드 고정)</td><td>BA 수정 SQL에 <code>SELECT * FROM TMP_KJH_0915</code> 입력 → 검사에서 막힘</td></tr>
+          <tr><td>C3</td><td>일이 밀리지 않는다 (리드타임)</td><td>요청별 접수·승인 시각, 되묻기 수 기록</td><td>처리 기록 탭 (프로토타입 기록이라 실제 수치는 아님)</td></tr>
+          <tr><td>C4</td><td>BA 검토 없이 실행 금지</td><td>승인 전 마케터는 결과·SQL·건수를 받지 못함. 대상자는 개인정보 확인 필수. 수정 SQL은 재검사·재승인</td><td>승인 전 마케터 카드는 "BA 확인 중"만 표시. 대상자 승인 시 개인정보 확인 체크를 빼면 거절</td></tr>
+          <tr><td>C5</td><td>Jira 보안 미확인</td><td>연동 없음</td><td>—</td></tr>
+          <tr><td>C6</td><td>LLM API 계약 없음, 사내망</td><td>외부 모델 호출 없음, 추적 전송 차단</td><td>상단 "offline 모드" 표시</td></tr>
+          <tr><td>C7</td><td>쉬운 업무부터</td><td>순매출·주문 수 집계, 구매·조회·장바구니·찜 대상자만 초안. 나머지는 BA로</td><td>예시의 "BA 이관" 문구</td></tr>
+          <tr><td>C9</td><td>기존 쿼리 오류</td><td>오류 유형을 자동 검사 규칙으로</td><td>BA 카드의 검사 결과 · 규칙 점검 탭의 규칙 목록</td></tr>
+          <tr><td>C10</td><td>성공 지표 · 97%</td><td>평가 실행기(n/N) — 정의 합의 대기</td><td>터미널 <code>tests/</code> (화면 미포함)</td></tr>
+          <tr><td>C11</td><td>데이터로 테이블 뜻 찾기</td><td>규칙 파일이 지식의 원천, 순매출은 대시보드와 일치</td><td>규칙 점검 탭의 용어 상태</td></tr>
+          <tr><td>C12</td><td>룰을 직접 보고 고치기 (Claude 미사용)</td><td>CSV 수정이 다음 요청에 반영</td><td>vocab.csv에 동의어 추가 → 점검 → 같은 문구 다시 요청</td></tr>
+          <tr><td>C13</td><td>외부 반출 금지</td><td>127.0.0.1 전용, 외부 글꼴·스크립트 없음, 결과 파일은 승인 후 로컬 내려받기만</td><td>주소창이 127.0.0.1 인지 확인</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 처리 기록 -->
+<section class="tab" id="tab-log" hidden>
+  <div class="wide">
+    <h2>처리 기록 <span class="muted">(KPI 측정 장치 · 최근 50건)</span></h2>
+    <div class="row"><button class="btn" id="log-refresh">새로고침</button></div>
+    <div id="log-out"></div>
+  </div>
+</section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const STATE_LABEL = {clarify:"되묻기", review:"BA 확인 중", answered:"승인 완료", handoff:"BA 이관", running:"처리 중"};
+const tagHtml = s => `<span class="tag t-${esc(s)}">${esc(STATE_LABEL[s] || s || "-")}</span>`;
+let currentRid = null, currentReview = null;
+
+async function call(path, body) {
+  const r = await fetch(path, body ? {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)} : {});
+  return r.json();
+}
+
+// 탭
+document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll("nav.tabs button").forEach(x => x.setAttribute("aria-selected", String(x === b)));
+  document.querySelectorAll("section.tab").forEach(s => s.hidden = s.id !== "tab-" + b.dataset.tab);
+  if (b.dataset.tab === "log") loadLog();
+}));
+
+// 예시
+call("/api/examples").then(groups => {
+  $("#examples").innerHTML = groups.map(g => `<div class="exg">${esc(g.group)}</div><div class="chips">${
+    g.items.map(t => `<button type="button" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div>`).join("");
+  $("#examples").addEventListener("click", e => { const b = e.target.closest("button[data-t]"); if (b) { $("#ask-text").value = b.dataset.t; $("#ask-text").focus(); } });
+});
+
+// 고객 테스트 시나리오
+call("/api/scenarios").then(list => {
+  $("#scenarios").innerHTML = list.map((s, i) => `<li><b>${esc(s.title)}</b> <span class="tag t-running">${esc(s.req)}</span>
+    <div class="chips" style="margin:4px 0"><button type="button" data-t="${esc(s.text)}">${esc(s.text)}</button></div>
+    <div class="muted">할 일: ${esc(s.steps)}</div><div class="muted">확인: ${esc(s.check)}</div></li>`).join("");
+  $("#scenarios").addEventListener("click", e => { const b = e.target.closest("button[data-t]"); if (b) { $("#ask-text").value = b.dataset.t; $("#ask-text").focus(); } });
+});
+
+// 마케터
+async function ask() {
+  const text = $("#ask-text").value.trim();
+  if (!text) { $("#ask-msg").textContent = "요청 문장을 입력해 주세요."; return; }
+  $("#ask-btn").disabled = true; $("#ask-msg").textContent = "처리 중…";
+  const v = await call("/api/ask", {text, user: $("#ask-user").value});
+  $("#ask-btn").disabled = false;
+  if (v.error) { $("#ask-msg").textContent = v.error; return; }
+  $("#ask-msg").textContent = `${v.request_id} 접수`;
+  $("#ask-text").value = "";
+  currentRid = v.request_id; renderMk(v); loadReqs(); loadQueue();
+}
+$("#ask-btn").addEventListener("click", ask);
+$("#ask-text").addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) ask(); });
+
+async function loadReqs() {
+  const rows = await call("/api/requests");
+  $("#req-list").innerHTML = rows.length ? rows.map(r => `<button type="button" data-rid="${esc(r.request_id)}" aria-current="${r.request_id === currentRid}">
+    ${tagHtml(r.status)}<span class="q">${esc(r.request)}</span><span class="muted">${esc(r.request_id)}</span></button>`).join("")
+    : `<p class="muted">아직 요청이 없습니다. 위에서 요청을 보내 보세요.</p>`;
+}
+$("#req-list").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-rid]"); if (!b) return;
+  currentRid = b.dataset.rid; renderMk(await call("/api/status?rid=" + encodeURIComponent(currentRid))); loadReqs();
+});
+$("#req-refresh").addEventListener("click", async () => { loadReqs(); if (currentRid) renderMk(await call("/api/status?rid=" + encodeURIComponent(currentRid))); });
+
+function renderMk(v) {
+  if (v.error) { $("#mk-card").innerHTML = `<div class="alert bad">${esc(v.error)}</div>`; return; }
+  let h = `<div class="card"><div class="row" style="justify-content:space-between"><b>${esc(v.request_id)}</b>${tagHtml(v.state)}</div>
+    <div class="bubble me">${esc(v.request)}</div>`;
+  (v.answers || []).forEach(a => { h += `<div class="bubble">${esc(a.question)}</div><div class="bubble me">${esc(a.answer)}</div>`; });
+  if (v.understood) h += `<div class="alert info"><b>이해한 내용</b><br>${esc(v.understood)}</div>`;
+  if (v.state === "clarify") {
+    h += `<div class="muted">확인이 필요합니다</div>`;
+    v.questions.forEach(q => {
+      const quick = ["unparsed", "categories_confirm"].includes(q.field);
+      h += `<div class="card"><div>${esc(q.question)}</div><div class="row">
+        <input type="text" data-field="${esc(q.field)}" placeholder="답변" style="flex:1;min-width:160px">
+        ${quick ? `<button class="btn" type="button" data-quick="${esc(q.field)}">진행</button>` : ""}</div></div>`;
+    });
+    h += `<button class="btn primary" type="button" id="ans-btn">답변 보내기</button>`;
+  } else if (v.state === "review") {
+    h += `<div class="alert warn">BA가 확인 중입니다. 승인되면 결과를 받을 수 있습니다. (오른쪽 BA 검토에서 승인해 보세요)</div>`;
+  } else if (v.state === "answered") {
+    h += `<div class="alert ok"><b>BA 승인 완료 · ${esc(v.approved_by)}</b><br>${esc(v.summary)}</div><ul>${
+      v.scope_notes.map(n => `<li>${esc(n)}</li>`).join("")}<li>데이터 기준: ${
+      Object.entries(v.data_as_of).map(([k, t]) => `${esc(k)} ${esc(t.slice(0, 16).replace("T", " "))}`).join(", ")}</li></ul>
+      <a class="btn" href="${esc(v.download)}">결과 파일 받기 (사내 보관용 CSV)</a>`;
+  } else if (v.state === "handoff") {
+    h += `<div class="alert bad"><b>BA가 직접 처리합니다</b><br>${esc(v.message)}</div>`;
+  }
+  $("#mk-card").innerHTML = h + `</div>`;
+  const btn = $("#ans-btn");
+  if (btn) {
+    $("#mk-card").querySelectorAll("[data-quick]").forEach(b => b.addEventListener("click", () => {
+      $(`#mk-card input[data-field="${b.dataset.quick}"]`).value = "진행"; }));
+    btn.addEventListener("click", async () => {
+      const answers = {};
+      $("#mk-card").querySelectorAll("input[data-field]").forEach(i => answers[i.dataset.field] = i.value);
+      btn.disabled = true;
+      const r = await call("/api/answer", {rid: v.request_id, answers});
+      renderMk(r); loadReqs(); loadQueue();
+    });
+  }
+}
+
+// BA
+async function loadQueue() {
+  const q = await call("/api/queue");
+  $("#queue").innerHTML = q.length ? q.map(r => `<button type="button" data-rid="${esc(r.request_id)}" aria-current="${currentReview === r.request_id}">
+    <span class="q">${esc(r.request)}</span><span class="muted">${esc(r.request_id)} · ${esc(r.requester)}</span></button>`).join("")
+    : `<p class="muted">검토 대기 없음</p>`;
+}
+$("#queue-refresh").addEventListener("click", loadQueue);
+$("#queue").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-rid]"); if (!b) return;
+  currentReview = b.dataset.rid; renderBa(await call("/api/review?rid=" + encodeURIComponent(currentReview))); loadQueue();
+});
+
+const TAGS = ["", "requirement_misread", "missed_clarification", "wrong_table", "wrong_term_mapping", "id_system_mismatch",
+  "code_join_duplicate", "wrong_period_filter", "fan_out_join", "missing_condition", "scope_mismatch", "pii_exposure", "other"];
+
+function renderBa(p) {
+  if (p.error) { $("#ba-card").innerHTML = `<div class="alert bad">${esc(p.error)}</div>`; return; }
+  const c = p.check;
+  let h = `<div class="card"><div class="row" style="justify-content:space-between"><b>${esc(p.request_id)} · 초안 ${esc(p.draft_id)}</b>
+    <span class="tag ${p.author === "ba" ? "t-handoff" : "t-review"}">${p.author === "ba" ? "BA 수정본" : "챗봇 초안"}</span></div>`;
+  if (p.notice) h += `<div class="alert bad">${esc(p.notice)}</div>`;
+  h += `<div class="alert info"><b>이해한 내용</b><br>${esc(p.understood)}</div>`;
+  if (p.unparsed && p.unparsed.length) h += `<div class="alert warn">해석하지 못한 말(마케터가 제외하고 진행 동의): ${esc(p.unparsed.join(", "))}</div>`;
+  h += `<div><b>자동 검사</b> ${c.passed ? `<span class="tag t-answered">통과</span>` : `<span class="tag t-handoff">실패</span>`} <span class="muted">규칙 버전 ${esc(c.ruleset_version)}</span></div>`;
+  if (c.results.length) h += `<ul>${c.results.map(r => `<li class="lv-${r.level === "fail" ? "FAIL" : "WARN"}">[${esc(r.level)}] ${esc(r.rule_id)} ${esc(r.message)}</li>`).join("")}</ul>`;
+  if (c.missing_required_terms.length) h += `<div class="alert bad">필수 용어 누락: ${esc(c.missing_required_terms.join(", "))}</div>`;
+  if (p.unconfirmed_terms.length) h += `<div class="alert warn">BA 미확정 용어 사용: ${esc(p.unconfirmed_terms.join(", "))} — rules/terms.csv 의 confirmed_by</div>`;
+  const notes = [...p.scope_notes, ...p.assumptions];
+  if (notes.length) h += `<ul class="muted">${notes.map(n => `<li>${esc(n)}</li>`).join("")}</ul>`;
+  if (p.preview) {
+    h += `<div><b>미리 실행</b> ${esc(p.preview.row_count)}행${p.preview.truncated ? " (상한에서 잘림)" : ""} <span class="muted">· 상위 10행</span></div>
+      <div class="tbl"><table><thead><tr>${p.preview_rows.head.map(x => `<th>${esc(x)}</th>`).join("")}</tr></thead><tbody>${
+      p.preview_rows.rows.map(r => `<tr>${r.map(x => `<td class="n">${esc(x)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  } else {
+    h += `<div class="alert warn">미리 실행 결과가 없습니다 (검사 실패 또는 실행 오류). 승인할 수 없습니다.</div>`;
+  }
+  h += `<div><b>SQL</b> <span class="muted">(고친 뒤 "수정 SQL로 재검사"를 누르면 다시 검사·미리 실행 후 재승인 대기)</span></div>
+    <textarea class="sql" id="ba-sql">${esc(p.sql)}</textarea>
+    <div class="row"><input type="text" id="ba-reviewer" placeholder="검토자 이름 (예: ba01)" style="width:180px" value="${esc(localStorage.getItem("reviewer") || "")}">
+      <select id="ba-tag" aria-label="실패 태그" style="width:220px">${TAGS.map(t => `<option value="${t}">${t || "실패 태그 (수정·반려 시)"}</option>`).join("")}</select></div>
+    ${p.is_push_target ? `<label class="inline"><input type="checkbox" id="ba-pii"> 대상자 목록 개인정보 확인 (고객 ID만 포함, 승인 시 필수)</label>` : ""}
+    <input type="text" id="ba-comment" placeholder="의견 (반려 사유 등)">
+    <div class="row">
+      <button class="btn ok" type="button" data-d="approve" ${c.passed && p.preview ? "" : "disabled"}>승인</button>
+      <button class="btn" type="button" data-d="revise">수정 SQL로 재검사</button>
+      <button class="btn bad" type="button" data-d="reject">반려</button>
+      <span class="muted" id="ba-msg" role="status"></span>
+    </div></div>`;
+  $("#ba-card").innerHTML = h;
+  $("#ba-card").querySelectorAll("button[data-d]").forEach(b => b.addEventListener("click", () => decide(p, b.dataset.d)));
+}
+
+async function decide(p, d) {
+  const reviewer = $("#ba-reviewer").value.trim();
+  if (!reviewer) { $("#ba-msg").textContent = "검토자 이름을 입력해 주세요."; return; }
+  try { localStorage.setItem("reviewer", reviewer); } catch (e) {}
+  const body = {rid: p.request_id, draft_id: p.draft_id, decision: d, reviewer,
+    pii_ack: !!($("#ba-pii") && $("#ba-pii").checked), failure_tags: [$("#ba-tag").value], comment: $("#ba-comment").value};
+  if (d === "revise") body.edited_sql = $("#ba-sql").value;
+  $("#ba-msg").textContent = "처리 중…";
+  const r = await call("/api/review", body);
+  if (r.error && !r.request_id) { $("#ba-msg").textContent = r.error; return; }
+  if (r.done) {
+    $("#ba-card").innerHTML = `<div class="alert ok">${esc(p.request_id)} 처리 완료 — 마케터 화면: ${esc(STATE_LABEL[r.marketer.state] || r.marketer.state)}</div>`;
+    if (currentRid === p.request_id) renderMk(r.marketer);
+  } else {
+    renderBa(r);
+  }
+  loadQueue(); loadReqs();
+}
+
+// 규칙 점검
+$("#rules-run").addEventListener("click", async () => {
+  $("#rules-msg").textContent = "점검 중…";
+  const r = await call("/api/rules");
+  if (r.error) { $("#rules-msg").textContent = r.error; return; }
+  const cnt = l => r.rows.filter(x => x.level === l).length;
+  $("#rules-msg").textContent = `규칙 버전 ${r.version} · 실패 ${cnt("FAIL")} · 주의 ${cnt("WARN")}`;
+  $("#rules-out").innerHTML = `
+    <div class="tbl"><table><thead><tr><th>결과</th><th>파일</th><th>내용</th></tr></thead><tbody>${
+      r.rows.map(x => `<tr><td class="lv-${esc(x.level)}">${esc(x.level)}</td><td>${esc(x.area)}</td><td>${esc(x.msg)}</td></tr>`).join("")}</tbody></table></div>
+    <b>업무 용어 (terms.csv)</b>
+    <div class="tbl"><table><thead><tr><th>ID</th><th>용어</th><th>상태</th><th>확인자</th><th>정의</th></tr></thead><tbody>${
+      r.terms.map(t => `<tr><td>${esc(t.id)}</td><td>${esc(t.term)}</td><td>${esc(t.status)}</td><td>${esc(t.confirmed_by || "미확정")}</td><td>${esc(t.definition)}</td></tr>`).join("")}</tbody></table></div>
+    <b>자동 검사 규칙 (checks.csv)</b>
+    <div class="tbl"><table><thead><tr><th>ID</th><th>사용</th><th>수준</th><th>설명</th></tr></thead><tbody>${
+      r.checks.map(c => `<tr><td>${esc(c.id)}</td><td>${c.enabled ? "Y" : "N"}</td><td>${esc(c.severity)}</td><td>${esc(c.desc)}</td></tr>`).join("")}</tbody></table></div>
+    <p class="muted">규칙 파일: ${r.files.map(esc).join(", ")} · SELECT 전용·허용 테이블 읽기·실행 상한은 코드에 고정되어 CSV로 끌 수 없음</p>`;
+});
+
+// 처리 기록
+async function loadLog() {
+  const rows = await call("/api/log");
+  $("#log-out").innerHTML = rows.length ? `<div class="tbl" style="max-height:none"><table><thead><tr><th>요청</th><th>유형</th><th>결과</th><th>이관 사유</th><th>되묻기</th><th>초안 수</th><th>무수정 승인</th><th>리드타임(분)</th></tr></thead><tbody>${
+    rows.slice().reverse().map(r => `<tr><td>${esc(r.request_id)}</td><td>${esc(r.request_type)}</td><td>${esc(r.outcome)}</td><td>${esc(r.handoff_reason || "")}</td>
+      <td class="n">${esc(r.clarify_turns)}</td><td class="n">${esc(r.drafts)}</td><td>${r.first_review_approved_unedited ? "예" : ""}</td><td class="n">${esc(r.lead_time_min)}</td></tr>`).join("")}</tbody></table></div>
+    <p class="muted">프로토타입 데모 기록입니다. 실제 리드타임·승인률은 BA가 쓰기 시작한 뒤에만 의미가 있습니다.</p>`
+    : `<p class="muted">끝난 요청이 아직 없습니다.</p>`;
+}
+$("#log-refresh").addEventListener("click", loadLog);
+
+loadReqs(); loadQueue();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+CREATE TABLE NX_QPS1_SND (
+    SND_ID        VARCHAR(20),
+    CUST_ID       VARCHAR(20),
+    CMP_ID        VARCHAR(12),
+    SND_TS        TIMESTAMP
+)
+DISTSTYLE AUTO;

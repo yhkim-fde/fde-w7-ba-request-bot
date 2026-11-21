@@ -1,0 +1,7 @@
+CREATE TABLE LX_KRP3_SKU (
+    SKU_CD        VARCHAR(12),
+    MDL_CD        VARCHAR(12),
+    COLOR         VARCHAR(20),
+    CAP           VARCHAR(20)
+)
+DISTSTYLE AUTO;

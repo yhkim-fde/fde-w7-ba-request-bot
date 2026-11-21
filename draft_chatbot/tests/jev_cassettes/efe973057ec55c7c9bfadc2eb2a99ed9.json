@@ -1,0 +1,24 @@
+{
+ "model": "jev-1.14.0",
+ "answers": {
+  "intent": {
+   "type": "choice",
+   "choice": "target_extraction",
+   "p": 0.97,
+   "probabilities": {
+    "aggregate_report": 0.02,
+    "target_extraction": 0.97,
+    "analysis": 0.0,
+    "copywriting": 0.0,
+    "none": 0.01
+   },
+   "confidence": 0.96
+  },
+  "seg_0": {
+   "type": "noul",
+   "p": 0.98
+  }
+ },
+ "input_tokens": 576,
+ "recorded_at": "2026-11-21T17:06:48"
+}

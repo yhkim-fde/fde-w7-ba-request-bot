@@ -1,0 +1,8 @@
+CREATE TABLE LX_HJV4_RTN (
+    ORD_NO        VARCHAR(16),
+    ORD_SEQ       INTEGER,
+    RTN_TP        VARCHAR(2),
+    RTN_AMT       NUMERIC(15,0),
+    RTN_DT        CHAR(8)
+)
+DISTSTYLE AUTO;

@@ -1,0 +1,36 @@
+table,domain,allowed,id_system,excluded_reason,is_history,refresh,note
+LX_DNS1_M,회원,Y,MBR_NO,,N,,회원 마스터. 이름·전화는 마스킹. 현재 등급(GRD_CD)이 이력과 다른 회원 있음
+LX_DNS2_H,회원,Y,MBR_NO,,Y,,등급 이력. 현재 구간 TO_DT=99991231
+NX_DNS5_AGR,회원,Y,CUST_ID,,N,추출 시각까지,푸시·SMS 수신동의
+LX_HJV1_H,주문,Y,MBR_NO,,N,야간 배치(D-1),주문 헤더. 2026-05-01 이후
+LX_HJV1_D,주문,Y,none,,N,야간 배치(D-1),주문 상세(주문 1 : 상세 N)
+LX_HJV1_H_BAK,주문,N,MBR_NO,옛 백업(2024-11-15에 멈춤),N,,사용 금지
+LX_HJV3_PAY,주문,Y,none,,N,야간 배치(D-1),결제. PAY_TS 형식이 다른 시각 컬럼과 다름
+LX_HJV4_RTN,주문,Y,none,,N,야간 배치(D-1),취소(C)·반품(R). 주문일로 귀속
+NX_HJV6_DLV,주문,Y,none,,N,야간 배치(D-1),배송
+LX_KRP1_M,상품,Y,none,,N,,모델
+LX_KRP2_C,상품,Y,none,,N,,카테고리 대·중·소
+LX_KRP3_SKU,상품,Y,none,,N,,SKU → 모델
+NX_KRP4_PRC,상품,Y,none,,Y,,가격 이력
+NX_KRP7_ATTR,상품,Y,none,,N,,모델 속성. CNSM_YN=소모품 HS_YN=홈스타일 BIZ_YN=B2B(추정)
+LX_BNF1_M,혜택,Y,none,,N,,쿠폰 마스터. DC_TP A=정액 R=정률
+LX_BNF2_ISS,혜택,Y,MBR_NO,,N,,쿠폰 발급. 같은 회원 재발급 있음
+LX_BNF3_USE,혜택,Y,MBR_NO,,N,,쿠폰 사용
+NX_BNF5_PRM,혜택,Y,none,,N,,프로모션(FR_DT~TO_DT)
+NX_BNF5_MAP,혜택,Y,none,,N,,프로모션 ↔ 쿠폰
+NX_EVL1_SSN,행동,Y,CUST_ID,,N,야간 배치(D-1),세션
+NX_EVL2_PV,행동,Y,none,,N,야간 배치(D-1),상품 조회
+NX_EVL3_CRT,행동,Y,CUST_ID,,N,야간 배치(D-1),장바구니
+NX_EVL4_WSH,행동,Y,CUST_ID,,N,야간 배치(D-1),찜
+NX_EVL5_SRCH,행동,Y,none,,N,야간 배치(D-1),검색
+NX_QPS1_SND,푸시,Y,CUST_ID,,N,추출 시각까지,푸시 발송
+NX_QPS2_TGT,푸시,Y,CUST_ID,,N,추출 시각까지,캠페인 대상자
+NX_QPS3_RSP,푸시,Y,none,,N,추출 시각까지,오픈·클릭
+NX_QPS9_LMT,푸시,Y,none,,N,,발송 제한(PUSH 7일 2회 등)
+NX_AGG1_DSL,집계,Y,none,,N,매일 06시(D-1),일별 채널·카테고리 순매출. 계산식은 terms.csv T01
+NX_AGG2_MBR_D,집계,Y,MBR_NO,,N,매일 06시(D-1),일별 회원 주문 수
+LX_ZCM_CD,공통,Y,none,,N,,공통코드. CHNL 03이 두 이름으로 중복 등록
+LX_ZCM_CHNL,공통,Y,none,,N,,채널 마스터(채널 조인은 이 테이블 사용)
+LX_ZCM_DT,공통,Y,none,,N,,달력
+LX_ZCM_PTNR,공통,Y,none,,N,,파트너. 참조하는 컬럼 없음
+TMP_KJH_0915,임시,N,MBR_NO,개인 임시 테이블(플래그 의미 불명),N,,사용 금지

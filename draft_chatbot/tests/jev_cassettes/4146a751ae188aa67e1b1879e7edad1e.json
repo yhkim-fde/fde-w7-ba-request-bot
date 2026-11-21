@@ -1,0 +1,39 @@
+{
+ "model": "jev-1.14.0",
+ "answers": {
+  "intent": {
+   "type": "choice",
+   "choice": "target_extraction",
+   "p": 1.0,
+   "probabilities": {
+    "aggregate_report": 0.0,
+    "target_extraction": 1.0,
+    "analysis": 0.0,
+    "copywriting": 0.0,
+    "none": 0.0
+   },
+   "confidence": 1.0
+  },
+  "negation": {
+   "type": "choice",
+   "choice": "exclude_buyers",
+   "p": 1.0,
+   "probabilities": {
+    "exclude_buyers": 1.0,
+    "only_non_buyers": 0.0,
+    "unclear": 0.0
+   },
+   "confidence": 1.0
+  },
+  "seg_0": {
+   "type": "noul",
+   "p": 0.98
+  },
+  "seg_1": {
+   "type": "noul",
+   "p": 0.98
+  }
+ },
+ "input_tokens": 789,
+ "recorded_at": "2026-11-21T17:06:46"
+}

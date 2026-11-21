@@ -1,0 +1,7 @@
+CREATE TABLE LX_BNF1_M (
+    CPN_ID        VARCHAR(12),
+    CPN_NM        VARCHAR(100),
+    DC_TP         CHAR(1),
+    DC_VAL        NUMERIC(15,0)
+)
+DISTSTYLE AUTO;

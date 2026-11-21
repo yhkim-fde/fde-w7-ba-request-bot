@@ -1,0 +1,6 @@
+CREATE TABLE NX_EVL2_PV (
+    SSN_ID        VARCHAR(20),
+    MDL_CD        VARCHAR(12),
+    PV_TS         TIMESTAMP
+)
+DISTSTYLE AUTO;

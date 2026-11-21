@@ -1,0 +1,11 @@
+# 비밀값 — 절대 커밋하지 않음
+.env
+.env.*
+!.env.jev.example
+
+# 실행 환경·실행 기록
+.venv/
+draft_chatbot/var/
+__pycache__/
+*.pyc
+.DS_Store

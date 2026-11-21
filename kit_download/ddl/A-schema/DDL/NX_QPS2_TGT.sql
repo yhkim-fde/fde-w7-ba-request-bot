@@ -1,0 +1,6 @@
+CREATE TABLE NX_QPS2_TGT (
+    CMP_ID        VARCHAR(12),
+    CUST_ID       VARCHAR(20),
+    TGT_DT        CHAR(8)
+)
+DISTSTYLE AUTO;

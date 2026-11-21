@@ -1,0 +1,8 @@
+CREATE TABLE LX_DNS1_M (
+    MBR_NO        BIGINT,
+    JOIN_DT       CHAR(8),
+    GRD_CD        VARCHAR(4),
+    NM_MSK        VARCHAR(20),
+    TEL_MSK       VARCHAR(20)
+)
+DISTSTYLE AUTO;

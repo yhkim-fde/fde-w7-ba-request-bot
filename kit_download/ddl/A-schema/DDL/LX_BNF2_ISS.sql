@@ -1,0 +1,7 @@
+CREATE TABLE LX_BNF2_ISS (
+    CPN_ID        VARCHAR(12),
+    MBR_NO        BIGINT,
+    GET_TS        VARCHAR(14),
+    EXP_DT        CHAR(8)
+)
+DISTSTYLE AUTO;

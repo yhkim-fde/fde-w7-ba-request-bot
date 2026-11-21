@@ -1,0 +1,7 @@
+CREATE TABLE NX_AGG1_DSL (
+    DT            CHAR(8),
+    CHNL_CD       VARCHAR(4),
+    CAT_CD        VARCHAR(8),
+    NET_AMT       NUMERIC(15,0)
+)
+DISTSTYLE AUTO;

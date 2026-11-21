@@ -1,0 +1,7 @@
+CREATE TABLE NX_KRP4_PRC (
+    SKU_CD        VARCHAR(12),
+    PRC           NUMERIC(15,0),
+    FR_TS         TIMESTAMP,
+    TO_TS         TIMESTAMP
+)
+DISTSTYLE AUTO;

@@ -1,0 +1,37 @@
+# Jev 그림자 비교 · heldout_cases.json · 모드 record · 출처 {'record': 25}
+(stub·replay_miss_stub 출처는 규칙을 흉내 낸 가짜 답이라 성능 수치가 아님)
+
+- 처리 25/25 (오류 0)
+- J2 의도: Jev·규칙 일치 24/25 · 기대 의도와 일치 Jev 9/9, 규칙 9/9
+- J1 문장 필터: 구절 33 중 뺄 후보 0, 규칙이 막은 것 2 · '해석 못 한 말' 되묻기 3건 중 J1이 풀 수 있었던 것 0
+- J3 부정 표현: 일치 1/2
+
+## Jev·규칙 의도 불일치 (기대 의도가 있는 문항)
+(없음)
+
+## 문항별
+#01 규칙 draft   의도 규칙 aggregate_report  Jev aggregate_report  p=1.00 구절 2 뺄후보 0
+#02 규칙 draft   의도 규칙 aggregate_report  Jev aggregate_report  p=1.00 구절 1 뺄후보 0
+#03 규칙 draft   의도 규칙 aggregate_report  Jev aggregate_report  p=1.00 구절 1 뺄후보 0
+#04 규칙 draft   의도 규칙 aggregate_report  Jev aggregate_report  p=1.00 구절 1 뺄후보 0
+#05 규칙 draft   의도 규칙 aggregate_report  Jev aggregate_report  p=1.00 구절 1 뺄후보 0
+#06 규칙 draft   의도 규칙 target_extraction Jev target_extraction p=1.00 구절 2 뺄후보 0
+#07 규칙 draft   의도 규칙 target_extraction Jev target_extraction p=1.00 구절 1 뺄후보 0
+#08 규칙 draft   의도 규칙 target_extraction Jev target_extraction p=1.00 구절 2 뺄후보 0
+#09 규칙 draft   의도 규칙 target_extraction Jev target_extraction p=1.00 구절 2 뺄후보 0
+#10 규칙 clarify 의도 규칙 aggregate_report  Jev aggregate_report  p=1.00 구절 2 뺄후보 0
+#11 규칙 clarify 의도 규칙 aggregate_report  Jev aggregate_report  p=0.99 구절 1 뺄후보 0
+#12 규칙 clarify 의도 규칙 target_extraction Jev target_extraction p=1.00 구절 1 뺄후보 0
+#13 규칙 clarify 의도 규칙 target_extraction Jev target_extraction p=1.00 구절 1 뺄후보 0
+#14 규칙 clarify 의도 규칙 target_extraction Jev target_extraction p=1.00 구절 1 뺄후보 0
+#15 규칙 clarify 의도 규칙 target_extraction Jev target_extraction p=1.00 구절 1 뺄후보 0
+#16 규칙 clarify 의도 규칙 target_extraction Jev target_extraction p=1.00 구절 2 뺄후보 0
+#17 규칙 clarify 의도 규칙 target_extraction Jev target_extraction p=1.00 구절 1 뺄후보 0
+#18 규칙 clarify 의도 규칙 target_extraction Jev target_extraction p=0.97 구절 1 뺄후보 0
+#19 규칙 handoff 의도 규칙 aggregate_report  Jev aggregate_report  p=0.98 구절 1 뺄후보 0
+#20 규칙 handoff 의도 규칙 analysis          Jev analysis          p=1.00 구절 2 뺄후보 0
+#21 규칙 handoff 의도 규칙 aggregate_report  Jev aggregate_report  p=1.00 구절 1 뺄후보 0
+#22 규칙 handoff 의도 규칙 analysis          Jev aggregate_report  p=0.70 구절 1 뺄후보 0
+#23 규칙 handoff 의도 규칙 aggregate_report  Jev aggregate_report  p=1.00 구절 1 뺄후보 0
+#24 규칙 handoff 의도 규칙 target_extraction Jev target_extraction p=1.00 구절 2 뺄후보 0
+#25 규칙 handoff 의도 규칙 out_of_scope      Jev copywriting       p=1.00 구절 1 뺄후보 0

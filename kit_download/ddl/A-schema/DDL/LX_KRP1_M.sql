@@ -1,0 +1,7 @@
+CREATE TABLE LX_KRP1_M (
+    MDL_CD        VARCHAR(12),
+    MDL_NM        VARCHAR(100),
+    CAT_CD        VARCHAR(8),
+    LNCH_DT       CHAR(8)
+)
+DISTSTYLE AUTO;

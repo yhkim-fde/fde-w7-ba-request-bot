@@ -1,0 +1,6 @@
+CREATE TABLE TMP_KJH_0915 (
+    MBR_NO        BIGINT,
+    FLAG1         INTEGER,
+    FLAG2         INTEGER
+)
+DISTSTYLE AUTO;

@@ -1,0 +1,8 @@
+CREATE TABLE LX_HJV1_H_BAK (
+    ORD_NO        VARCHAR(16),
+    MBR_NO        BIGINT,
+    ORD_DT        CHAR(8),
+    CHNL_CD       VARCHAR(4),
+    ORD_STAT      VARCHAR(4)
+)
+DISTSTYLE AUTO;

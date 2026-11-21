@@ -1,0 +1,7 @@
+CREATE TABLE LX_KRP2_C (
+    CAT_CD        VARCHAR(8),
+    CAT_L         VARCHAR(40),
+    CAT_M         VARCHAR(40),
+    CAT_S         VARCHAR(40)
+)
+DISTSTYLE AUTO;

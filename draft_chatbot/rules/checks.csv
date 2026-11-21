@@ -1,0 +1,11 @@
+rule_id,enabled,severity,description,pattern,applies_to
+R01,Y,block,SELECT 문만 허용,^\s*(with|select)\b,all
+R02,Y,block,허용되지 않은 테이블 사용(tables.csv allowed=N),,all
+R03,Y,block,MBR_NO와 CUST_ID 직접 비교 금지(T02 변환 사용),MBR_NO\s*=\s*\w*\.?CUST_ID|CUST_ID\s*=\s*\w*\.?MBR_NO,all
+R04,Y,block,프로모션·이력 기간은 시작과 끝을 모두 조건으로,FR_DT|FR_TS,all
+R05,Y,warn,반복 리포트에 고정 날짜 사용,'20\d{6}',report
+R06,Y,warn,공통코드(LX_ZCM_CD)로 채널 조인 시 채널 03 중복. LX_ZCM_CHNL 사용,LX_ZCM_CD,all
+R07,Y,warn,쿠폰 발급·사용을 회원·쿠폰만으로 조인하면 재발급 시 중복,LX_BNF3_USE,all
+R08,Y,warn,개인정보 컬럼 선택,NM_MSK|TEL_MSK,all
+R09,Y,block,푸시 대상자는 수신동의와 발송 제한(T03) 포함,NX_DNS5_AGR,push_target
+R10,Y,warn,PAY_TS는 'yyyy-mm-dd hh:mi:ss' 형식. 다른 시각 컬럼(yyyymmddhhmiss)과 직접 비교 금지,PAY_TS,all

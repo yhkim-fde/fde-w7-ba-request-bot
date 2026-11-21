@@ -1,0 +1,15 @@
+[project]
+name = "nuri-ba-bot"
+version = "0.1.0"
+description = "BA 요청 처리 draft 챗봇 (LangGraph, BA 승인 필수)"
+requires-python = ">=3.11"
+dependencies = [
+  "langgraph>=0.6",
+  "langgraph-checkpoint-sqlite>=2.0",
+  "langchain-core>=0.3",
+  "pydantic>=2.7",
+]
+
+[project.optional-dependencies]
+openai = ["langchain-openai>=0.3"]
+jev = ["langchain-typesafe==0.1.0"]   # 알파 패키지라 버전 고정 (BOT_JEV_MODE=off면 불필요)

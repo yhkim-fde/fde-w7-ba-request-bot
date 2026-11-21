@@ -1,0 +1,7 @@
+CREATE TABLE NX_DNS5_AGR (
+    CUST_ID       VARCHAR(20),
+    PUSH_YN       CHAR(1),
+    SMS_YN        CHAR(1),
+    UPD_TS        TIMESTAMP
+)
+DISTSTYLE AUTO;

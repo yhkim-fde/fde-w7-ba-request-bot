@@ -1,0 +1,7 @@
+CREATE TABLE LX_HJV3_PAY (
+    ORD_NO        VARCHAR(16),
+    PAY_MTHD      VARCHAR(4),
+    PAY_AMT       NUMERIC(15,0),
+    PAY_TS        VARCHAR(19)
+)
+DISTSTYLE AUTO;

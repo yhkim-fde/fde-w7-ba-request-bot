@@ -1,0 +1,9 @@
+CREATE TABLE LX_HJV1_D (
+    ORD_NO        VARCHAR(16),
+    ORD_SEQ       INTEGER,
+    SKU_CD        VARCHAR(12),
+    QTY           INTEGER,
+    SALE_AMT      NUMERIC(15,0),
+    DC_AMT        NUMERIC(15,0)
+)
+DISTSTYLE AUTO;

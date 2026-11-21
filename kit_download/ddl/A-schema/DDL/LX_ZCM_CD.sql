@@ -1,0 +1,6 @@
+CREATE TABLE LX_ZCM_CD (
+    CD_GRP        VARCHAR(10),
+    CD            VARCHAR(4),
+    CD_NM         VARCHAR(40)
+)
+DISTSTYLE AUTO;

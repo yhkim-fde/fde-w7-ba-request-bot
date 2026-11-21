@@ -1,0 +1,14 @@
+left,right,keys,cardinality,verified_by,note
+LX_HJV1_H,LX_HJV1_D,ORD_NO=ORD_NO,1:N,data,
+LX_HJV1_H,LX_HJV3_PAY,ORD_NO=ORD_NO,1:1,data,현재 데이터는 주문당 결제 1건
+LX_HJV1_D,LX_HJV4_RTN,ORD_NO=ORD_NO;ORD_SEQ=ORD_SEQ,1:N,data,
+LX_HJV1_D,LX_KRP3_SKU,SKU_CD=SKU_CD,N:1,data,
+LX_KRP3_SKU,LX_KRP1_M,MDL_CD=MDL_CD,N:1,data,
+LX_KRP1_M,LX_KRP2_C,CAT_CD=CAT_CD,N:1,data,
+LX_KRP1_M,NX_KRP7_ATTR,MDL_CD=MDL_CD,1:1,data,
+NX_AGG1_DSL,LX_ZCM_CHNL,CHNL_CD=CHNL_CD,N:1,dashboard_panel_2,LX_ZCM_CD로 조인하면 채널 03 중복
+NX_AGG1_DSL,LX_KRP2_C,CAT_CD=CAT_CD,N:1,dashboard_panel_3,
+NX_BNF5_PRM,NX_BNF5_MAP,PRM_ID=PRM_ID,1:N,dashboard_panel_4,
+NX_BNF5_MAP,LX_BNF2_ISS,CPN_ID=CPN_ID,1:N,dashboard_panel_4,
+LX_BNF2_ISS,LX_BNF3_USE,CPN_ID=CPN_ID;MBR_NO=MBR_NO,N:N,data,재발급 회원이 있어 행이 곱해질 수 있음
+LX_DNS1_M,NX_DNS5_AGR,'C'||MBR_NO=CUST_ID,1:1,data,terms.csv T02

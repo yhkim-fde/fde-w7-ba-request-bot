@@ -1,0 +1,7 @@
+CREATE TABLE LX_BNF3_USE (
+    CPN_ID        VARCHAR(12),
+    MBR_NO        BIGINT,
+    ORD_NO        VARCHAR(16),
+    USE_TS        VARCHAR(14)
+)
+DISTSTYLE AUTO;

@@ -1,0 +1,313 @@
+[
+ {
+  "q": "지난달 냉장고 순매출 알려주세요",
+  "expected": "draft",
+  "type": "aggregate",
+  "metric": "net_sales",
+  "group_by": null,
+  "categories": [
+   "냉장고"
+  ],
+  "channels": [],
+  "behavior": null,
+  "period_from": "20261001",
+  "period_to": "20261031",
+  "why": "지표·기간·카테고리 충족"
+ },
+ {
+  "q": "최근 7일 앱 주문 수 일별로 뽑아줘",
+  "expected": "draft",
+  "type": "aggregate",
+  "metric": "order_count",
+  "group_by": "day",
+  "categories": [],
+  "channels": [
+   "앱"
+  ],
+  "behavior": null,
+  "period_from": "20261113",
+  "period_to": "20261119",
+  "why": "주문 수+기간+채널+일별"
+ },
+ {
+  "q": "10월 카테고리별 순매출 보여주세요",
+  "expected": "draft",
+  "type": "aggregate",
+  "metric": "net_sales",
+  "group_by": "category",
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "period_from": "20261001",
+  "period_to": "20261031",
+  "why": "카테고리별 집계"
+ },
+ {
+  "q": "이번 달 세탁기 주문 건수 채널별로 부탁드려요",
+  "expected": "draft",
+  "type": "aggregate",
+  "metric": "order_count",
+  "group_by": "channel",
+  "categories": [
+   "세탁기"
+  ],
+  "channels": [],
+  "behavior": null,
+  "period_from": "20261101",
+  "period_to": "20261119",
+  "why": "이번 달은 1일~오늘"
+ },
+ {
+  "q": "9월 청소기 PC웹 순매출 좀 알려줘",
+  "expected": "draft",
+  "type": "aggregate",
+  "metric": "net_sales",
+  "group_by": null,
+  "categories": [
+   "청소기"
+  ],
+  "channels": [
+   "PC웹"
+  ],
+  "behavior": null,
+  "period_from": "20260901",
+  "period_to": "20260930",
+  "why": "카테고리+채널 필터"
+ },
+ {
+  "q": "최근 30일 안에 김치냉장고 장바구니에 담은 고객 푸시 리스트 뽑아주세요",
+  "expected": "draft",
+  "type": "target",
+  "metric": null,
+  "group_by": null,
+  "categories": [
+   "김치냉장고"
+  ],
+  "channels": [],
+  "behavior": "cart",
+  "period_from": "20261021",
+  "period_to": "20261119",
+  "why": "카테고리·행동·기간 충족"
+ },
+ {
+  "q": "지난주에 정수기 조회한 고객 추출해주세요",
+  "expected": "draft",
+  "type": "target",
+  "metric": null,
+  "group_by": null,
+  "categories": [
+   "정수기"
+  ],
+  "channels": [],
+  "behavior": "view",
+  "period_from": "20261109",
+  "period_to": "20261115",
+  "why": "조회 행동 대상자"
+ },
+ {
+  "q": "11월 1일~15일 공기청정기 구매한 고객 푸시 대상 부탁드려요",
+  "expected": "draft",
+  "type": "target",
+  "metric": null,
+  "group_by": null,
+  "categories": [
+   "공기청정기"
+  ],
+  "channels": [],
+  "behavior": "purchase",
+  "period_from": "20261101",
+  "period_to": "20261115",
+  "why": "구매 행동 대상자"
+ },
+ {
+  "q": "최근 2주 프린터 찜한 고객 뽑아주세요. 최근 7일 프린터 구매자는 제외해주세요",
+  "expected": "draft",
+  "type": "target",
+  "metric": null,
+  "group_by": null,
+  "categories": [
+   "프린터"
+  ],
+  "channels": [],
+  "behavior": "wish",
+  "period_from": "20261106",
+  "period_to": "20261119",
+  "why": "구매자 제외 옵션 허용"
+ },
+ {
+  "q": "냉장고 매출 알려줘",
+  "expected": "clarify",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "기간 누락"
+ },
+ {
+  "q": "지난달 실적 좀 보여주세요",
+  "expected": "clarify",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "지표(순매출/주문 수) 누락"
+ },
+ {
+  "q": "청소기 본 고객 뽑아줘",
+  "expected": "clarify",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "기간 누락"
+ },
+ {
+  "q": "10월에 세탁기 관련해서 푸시 보낼 고객 뽑아주세요",
+  "expected": "clarify",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "행동(구매/조회 등) 누락"
+ },
+ {
+  "q": "최근 한 달 구매한 고객 리스트 부탁해요",
+  "expected": "clarify",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "카테고리 누락"
+ },
+ {
+  "q": "최근 3개월 김치냉장고 안 산 고객 뽑아줘",
+  "expected": "clarify",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "부정 표현 모호"
+ },
+ {
+  "q": "서울 거주 고객 중 지난달 냉장고 구매한 사람 푸시 대상 뽑아주세요",
+  "expected": "clarify",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "지역 조건 표현 불가"
+ },
+ {
+  "q": "30대 여성 중 최근 2주 정수기 장바구니 담은 고객 추출해줘",
+  "expected": "clarify",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "연령·성별 조건 표현 불가"
+ },
+ {
+  "q": "10월 공기청정기 구매자 중 앱에서 산 사람만 뽑아주세요",
+  "expected": "clarify",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "대상자에 채널 필터 불가"
+ },
+ {
+  "q": "지난달 쿠폰 사용률 알려주세요",
+  "expected": "handoff",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "쿠폰 사용률은 담당자 이관"
+ },
+ {
+  "q": "10월 냉장고 매출이 왜 떨어졌는지 알려줘",
+  "expected": "handoff",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "원인 분석 질문"
+ },
+ {
+  "q": "3월 세탁기 순매출 알려주세요",
+  "expected": "handoff",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "데이터 시작일(5/1) 이전 기간"
+ },
+ {
+  "q": "다음 달 청소기 주문 수 예측해줄 수 있어요?",
+  "expected": "handoff",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "미래 기간·예측"
+ },
+ {
+  "q": "지난달 토너랑 잉크 같은 소모품 순매출 궁금해요",
+  "expected": "handoff",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "소모품 정의 미합의"
+ },
+ {
+  "q": "VIP 고객 중 최근 한 달 냉장고 구매한 사람 푸시 대상 뽑아주세요",
+  "expected": "handoff",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "회원등급 조건"
+ },
+ {
+  "q": "이번 프로모션 푸시 문구 좀 써주세요",
+  "expected": "handoff",
+  "type": null,
+  "metric": null,
+  "group_by": null,
+  "categories": [],
+  "channels": [],
+  "behavior": null,
+  "why": "데이터 요청 아님"
+ }
+]
