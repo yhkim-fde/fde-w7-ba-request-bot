@@ -9,7 +9,7 @@
 |---|---|---|
 | **최종 보고서** | 고객 요구사항 · 동작 시스템 · KPI와 설득 방안 · 로드맵 · 고객 자체 유지보수 · 테스트 페이지 안내 | [웹에서 보기](https://yhkim-fde.github.io/fde-w7-ba-request-bot/) · 원본 `docs/index.html` |
 | **챗봇 1 · offline 버전** | 규칙만으로 동작, 외부 호출 없음 (고객 제약 "LLM API 계약 없음") | [실행하기](#실행하기) |
-| **챗봇 2 · Jev 버전** | 판단 모델 Jev(TypeSafe)가 요청 의도를 함께 판단 | [두 가지 버전](#두-가지-버전) · [키 넣는 곳](#실행하기) 5번 |
+| **챗봇 2 · Jev 버전** | 판단 모델 Jev(TypeSafe)가 요청 의도를 함께 판단. 키 포함, 바로 실행 | [두 가지 버전](#두-가지-버전) · [안 될 때 키 교체](#실행하기) 5번 |
 
 ![테스트 화면](docs/test_page.png)
 <sub>테스트 화면. 왼쪽은 마케터, 오른쪽은 BA 검토. 미리 실행 결과와 SQL은 캡처에서 가렸습니다.</sub>
@@ -53,7 +53,7 @@ flowchart LR
 | 버전 | 설정 | 하는 일 | 키·네트워크 |
 |---|---|---|---|
 | **offline** (기본) | `BOT_JEV_MODE=off` | 규칙만으로 해석. 외부 호출 없음 | 필요 없음 |
-| **Jev 사용** | `BOT_JEV_MODE=live` | 판단 모델 Jev(TypeSafe)가 "집계인지, 대상자 명단인지" 의도를 함께 판단. 규칙이 BA에게 넘기려던 요청 등에서 Jev가 확신하면 **이관·초안 대신 의도를 되묻는 쪽으로만** 바꿈 | Jev API 키 필요 |
+| **Jev 사용** | `BOT_JEV_MODE=live` | 판단 모델 Jev(TypeSafe)가 "집계인지, 대상자 명단인지" 의도를 함께 판단. 규칙이 BA에게 넘기려던 요청 등에서 Jev가 확신하면 **이관·초안 대신 의도를 되묻는 쪽으로만** 바꿈 | 키 포함 · 인터넷 필요 |
 | Jev 녹화 재생 | `BOT_JEV_MODE=replay` | 저장된 Jev 답(`tests/jev_cassettes/`)으로 재생. 키 없이 Jev 버전 동작 확인용 | 필요 없음 |
 
 Jev에는 요청 문장과 고정 질문만 보냅니다(가명처리 후, 허용 호스트만, 감사 기록에는 원문 대신 지문만). 데이터 행이나 테이블 구조는 보내지 않습니다.
@@ -92,7 +92,7 @@ offline 버전:
 .venv/bin/python -m bot.web
 ```
 
-Jev 버전 (아래 5번에서 키를 넣은 뒤):
+Jev 버전 (키가 들어 있어 바로 실행됩니다):
 
 ```bash
 BOT_JEV_MODE=live .venv/bin/python -m bot.web
@@ -100,13 +100,23 @@ BOT_JEV_MODE=live .venv/bin/python -m bot.web
 
 터미널로도 됩니다: `.venv/bin/python -m bot ask "10월 카테고리별 매출 알려 주세요"` (명령 전체는 [draft_chatbot/bot/README.md](draft_chatbot/bot/README.md))
 
-**5. Jev API 키 넣는 곳** — 키는 저장소에 들어 있지 않습니다. 각자 발급받은 키를 넣습니다.
+**5. Jev API 키** — 바로 돌아가도록 키가 `draft_chatbot/.env.jev`에 들어 있습니다(작성자 키, 사용량이 많아지면 막힐 수 있음).
+
+**Jev가 안 될 때 (키 교체):** Jev 호출이 실패해도 챗봇은 멈추지 않고 규칙만으로 처리하기 때문에, 겉으로는 offline 버전처럼 보입니다. 아래로 확인합니다.
 
 ```bash
-cp .env.jev.example .env.jev
+BOT_JEV_MODE=live .venv/bin/python -m bot ask "공청기 장바구니만 담고 미구매한 고객 최근 7일 부탁"
 ```
 
-그다음 `draft_chatbot/.env.jev`를 열어 `TYPESAFE_API_KEY=` 뒤에 키를 붙여 넣습니다(따옴표 없이). 이 파일은 `.gitignore`에 등록되어 커밋되지 않습니다. 파일 대신 환경 변수 `TYPESAFE_API_KEY`로 넘겨도 됩니다. 키가 없으면 `replay` 모드로 Jev 버전 동작을 볼 수 있습니다.
+- **정상:** "매출·주문 같은 숫자 집계인가요, 푸시 보낼 고객 명단(대상자)인가요?"라고 되묻습니다.
+- **키 문제:** "BA가 직접 처리합니다"가 나오면 아래로 원인을 봅니다. `401 Unauthorized`(키 만료·폐기)나 사용량 초과가 보이면 키를 바꿔 주세요.
+
+```bash
+tail -1 var/requests.jsonl | grep -o '"error": "[^"]*'
+```
+
+- **키 바꾸는 곳:** `draft_chatbot/.env.jev`를 열어 `TYPESAFE_API_KEY=` 뒤를 본인 키로 바꿉니다(따옴표 없이). 파일을 고치지 않고 환경 변수 `TYPESAFE_API_KEY=본인키`를 앞에 붙여 실행해도 됩니다(환경 변수가 우선). 빈 양식은 `.env.jev.example`
+- 키 없이도 `replay` 모드로 Jev 버전 동작(녹화된 답)을 볼 수 있습니다.
 
 ## 테스트
 

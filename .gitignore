@@ -2,6 +2,8 @@
 .env
 .env.*
 !.env.jev.example
+# Jev 키 — 소유자 결정으로 공개 저장소에 포함 (README 참고)
+!draft_chatbot/.env.jev
 
 # 실행 환경·실행 기록
 .venv/
